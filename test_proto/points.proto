@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = "./test_proto";
+option optimize_for = SPEED;
+
+package points;
+
+service  Handler {
+    rpc Do(Points) returns (PointsResponse) {}
+}
+
+message Point  {
+    string measurement = 1;
+    int64  timestamp   = 2;
+    string name        = 3;
+    double val         = 4;
+}
+
+message Points {
+    string class          = 1;
+    string source         = 2;
+    repeated Point points = 3;
+}
+
+message PointsResponse {
+    uint32 processed = 1;
+    uint32 status    = 2;
+    string error     = 3;
+}
