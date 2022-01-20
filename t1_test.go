@@ -200,7 +200,7 @@ func runTestGRPC(b *testing.B, nPoints int, flags uint) (err error) {
 	}
 
 	if resp.Processed != uint32(len(request.Points)) {
-		msgs.Add("got %d points, expected %d", resp.Processed, len(request.Points))
+		msgs.Add("got %d points, %d expected", resp.Processed, len(request.Points))
 		return
 	}
 
@@ -285,7 +285,7 @@ func benchmarkHTTP(b *testing.B, flags uint32) {
 	listener, err := stdhttp.NewListener(
 		&config.Listener{
 			Addr:    srvAddr,
-			Timeout: timeout,
+			Timeout: config.Duration(timeout),
 		},
 		&testHTTP{
 			flags: flags,

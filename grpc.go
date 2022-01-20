@@ -5,7 +5,6 @@ import (
 	"net"
 	"strings"
 	"sync"
-	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -30,13 +29,12 @@ type (
 
 		client *grpc.ClientConn
 
-		Addr                string        `toml:"addr"`                  // Адрес
-		UseSSL              bool          `toml:"use-ssl"`               // Использовать SSL?
-		SSLCombinedPem      string        `toml:"ssl-combined-pem"`      // Файл с pem сертификатом (key+crt). Используется только при UseSSL=true
-		SkipTLSVerification bool          `toml:"skip-tls-verification"` // Не производить проверку сертификата контрагента?
-		MaxPacketSize       int           `toml:"max-packet-size"`       // Максимальный размер передаваемого пакета. 0 - значение по умолчанию
-		TimeoutS            string        `toml:"timeout"`               // Строчное представление Timeout
-		Timeout             time.Duration `toml:"-"`                     // Таймаут
+		Addr                string          `toml:"addr"`                  // Адрес
+		UseSSL              bool            `toml:"use-ssl"`               // Использовать SSL?
+		SSLCombinedPem      string          `toml:"ssl-combined-pem"`      // Файл с pem сертификатом (key+crt). Используется только при UseSSL=true
+		SkipTLSVerification bool            `toml:"skip-tls-verification"` // Не производить проверку сертификата контрагента?
+		MaxPacketSize       int             `toml:"max-packet-size"`       // Максимальный размер передаваемого пакета. 0 - значение по умолчанию
+		Timeout             config.Duration `toml:"timeout"`               // Таймаут
 
 	}
 
@@ -81,11 +79,6 @@ func (x *Config) Check(cfg interface{}) (err error) {
 
 	if x.MaxPacketSize <= 0 {
 		x.MaxPacketSize = defaultMaxPacketSize
-	}
-
-	x.Timeout, err = misc.Interval2Duration(x.TimeoutS)
-	if err != nil {
-		msgs.Add("grpc.timeout: %s", err)
 	}
 
 	if x.Timeout <= 0 {
