@@ -63,7 +63,7 @@ const (
 //----------------------------------------------------------------------------------------------------------------------------//
 
 // Проверка валидности Config
-func (x *Config) Check(cfg interface{}) (err error) {
+func (x *Config) Check(cfg any) (err error) {
 	x.mutex = new(sync.Mutex)
 
 	msgs := misc.NewMessages()

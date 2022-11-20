@@ -15,6 +15,7 @@ import (
 	"github.com/alrusov/config"
 	"github.com/alrusov/log"
 	"github.com/alrusov/misc"
+	"github.com/alrusov/panic"
 	"github.com/alrusov/stdhttp"
 
 	proto "github.com/alrusov/grpc/test_proto"
@@ -121,6 +122,9 @@ func runTestGRPC(b *testing.B, nPoints int, flags uint) (err error) {
 	wg.Add(1)
 
 	go func() {
+		panicID := panic.ID()
+		defer panic.SaveStackToLogEx(panicID)
+
 		done := false
 
 		err := srvCfg.StartServer(
@@ -200,7 +204,7 @@ func runTestGRPC(b *testing.B, nPoints int, flags uint) (err error) {
 	}
 
 	if resp.Processed != uint32(len(request.Points)) {
-		msgs.Add("got %d points, %d expected", resp.Processed, len(request.Points))
+		msgs.Add("got %d points, expected %d", resp.Processed, len(request.Points))
 		return
 	}
 
@@ -300,6 +304,9 @@ func benchmarkHTTP(b *testing.B, flags uint32) {
 	wg.Add(1)
 
 	go func() {
+		panicID := panic.ID()
+		defer panic.SaveStackToLogEx(panicID)
+
 		wg.Done()
 
 		err := listener.Start()
